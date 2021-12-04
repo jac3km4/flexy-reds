@@ -1,14 +1,7 @@
 module Flexy.UI
 import Flexy.Layout.*
 
-public native func RenderElem(root: ref<Elem>, container: ref<inkCompoundWidget>);
-
-public func RenderElem(root: ref<Elem>, size: Vector2) -> ref<inkWidget> {
-  let canvas = new inkCanvas();
-  canvas.SetSize(size);
-  RenderElem(root, canvas);
-  return canvas;
-}
+public native func RenderElem(root: ref<Elem>, size: Vector2) -> ref<inkWidget>;
 
 public func RenderElem(root: ref<Elem>) -> ref<inkWidget> {
   return RenderElem(root, new Vector2(0, 0));

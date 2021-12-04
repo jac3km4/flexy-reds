@@ -190,6 +190,7 @@ impl IntoRED for Widget {
 }
 
 #[allow(unused)]
+#[derive(Debug, Clone, Copy)]
 #[repr(u64)]
 pub enum DimensionUnit {
     Auto = 0,
@@ -209,7 +210,7 @@ impl IntoRED for DimensionUnit {
     type Repr = u64;
 
     fn type_name() -> &'static str {
-        "Uint64"
+        "Unit"
     }
 
     fn into_repr(self) -> Self::Repr {

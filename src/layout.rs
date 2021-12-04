@@ -10,16 +10,18 @@ pub fn build(elem: redscript::Elem) -> Node<redscript::Elem> {
     Node::new(children, props, elem)
 }
 
-pub fn render(elem: NodeWithLayout<redscript::Elem>, target: redscript::Widget) {
+pub fn render(elem: NodeWithLayout<redscript::Elem>) -> redscript::Widget {
     let pos = redscript::Vector2::new(elem.left(), elem.top());
     let size = redscript::Vector2::new(elem.width(), elem.height());
 
     let widget = call!(elem.inner().context().repr.clone(), "Render" (pos, size) -> redscript::Widget);
-    call!(target.repr, "AddChildWidget" (widget.clone()) -> ());
 
     for child in elem.children() {
-        render(child, widget.clone());
+        let child_widget = render(child);
+        call!(widget.repr.clone(), "AddChildWidget" (child_widget) -> ());
     }
+
+    widget
 }
 
 pub fn parse_dimension(str: &str) -> Result<Dimension> {

@@ -435,9 +435,9 @@ checksum = "830d08ce1d1d941e6b30645f1a0eb5643013d835ce3779a5fc208261dbe10f55"
 
 [[package]]
 name = "libc"
-version = "0.2.108"
+version = "0.2.109"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8521a1b57e76b1ec69af7599e75e38e7b7fad6610f037db8c79b127201b5d119"
+checksum = "f98a04dce437184842841303488f70d0188c5f51437d2a834dc097eafa909a01"
 
 [[package]]
 name = "libloading"
@@ -593,7 +593,7 @@ dependencies = [
 [[package]]
 name = "red4ext-rs"
 version = "0.1.0"
-source = "git+https://github.com/jac3km4/red4ext-rs.git?rev=6db53c2#6db53c2d818d10b4f5d92a39ecae6f3091100a24"
+source = "git+https://github.com/jac3km4/red4ext-rs.git?rev=f8d2f1e#f8d2f1e49d8f1a509d7c1ae65b3931dcdba8ae85"
 dependencies = [
  "array-init",
  "autocxx",

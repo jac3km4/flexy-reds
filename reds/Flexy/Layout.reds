@@ -136,9 +136,8 @@ enum FlexAlign {
   Baseline = 7
 }
 
-func ParseDim(str: String) -> ref<Dim> {
-  let vec = ParseDimVec(str);
-  return Dim.New(vec.X, IntEnum(Cast(vec.Y)));
+func NewDim(val: Float, unit: Unit) -> ref<Dim> {
+  return Dim.New(val, unit);
 }
 
-native func ParseDimVec(str: String) -> Vector2;
+native func ParseDim(str: String) -> ref<Dim>;
