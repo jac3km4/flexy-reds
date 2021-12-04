@@ -9,6 +9,5 @@ crate-type = ["cdylib"]
 [dependencies]
 anyhow = "1.0"
 ctor = "0.1"
-stretch = "0.3"
-# red4ext-rs = { path = "../red4ext-rs" }
+flexlayout-rs = { git = "https://github.com/jac3km4/flexlayout-rs.git", rev = "ae8e3ad" }
 red4ext-rs = { git = "https://github.com/jac3km4/red4ext-rs.git", rev = "6db53c2" }
