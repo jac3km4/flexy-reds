@@ -28,10 +28,10 @@ jobs:
       - name: Create a mod archive
         working-directory: staging
         run: |
-          mkdir -p ./bin/x64/plugins
+          mkdir -p ./red4ext/plugins
           mkdir -p ./r6/scripts
           cp -R ../reds/Flexy ./r6/scripts
-          cp ../target/release/flexy_reds.dll ./bin/x64/plugins/flexy.asi
+          cp ../target/release/flexy_reds.dll ./red4ext/plugins/flexy_reds.dll
       - name: Archive artifacts
         uses: actions/upload-artifact@v2
         with:
