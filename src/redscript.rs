@@ -48,6 +48,18 @@ impl Elem {
         elem
     }
 
+    pub fn new_image(atlas: &str, part: Option<&str>, color: Option<Color>, nine_slice: bool) -> Self {
+        let elem = call!("Flexy.UI.Image::New;String" (atlas) -> Elem);
+        if let Some(part) = part {
+            call!(elem.repr.clone(), "TexturePart" (part) -> Elem);
+        }
+        if let Some(color) = color {
+            call!(elem.repr.clone(), "Tint" (color) -> Elem);
+        }
+        call!(elem.repr.clone(), "NineSliceScale" (nine_slice) -> Elem);
+        elem
+    }
+
     pub fn layout(&self) -> Layout {
         call!(self.repr.clone(), "GetLayout" () -> Layout)
     }
@@ -89,6 +101,18 @@ impl FromRED for Layout {
 impl Layout {
     pub fn new() -> Self {
         call!("Flexy.Layout.Layout::New;" () -> Layout)
+    }
+
+    pub fn position_type(&self) -> PositionType {
+        match call!(self.repr.clone(), "GetPositionType" () -> u64) {
+            0 => PositionType::Relative,
+            1 => PositionType::Absolute,
+            _ => panic!(),
+        }
+    }
+
+    pub fn with_position_type(&mut self, typ: PositionType) -> Self {
+        call!(self.repr.clone(), "PositionType" (typ as u64) -> Self)
     }
 
     pub fn flex_direction(&self) -> FlexDirection {
@@ -134,6 +158,24 @@ impl Layout {
 
     pub fn with_align_content(&mut self, align: FlexAlign) -> Self {
         call!(self.repr.clone(), "AlignContent" (align as u64) -> Self)
+    }
+
+    pub fn align_items(&self) -> FlexAlign {
+        match call!(self.repr.clone(), "GetAlignItems" () -> u64) {
+            0 => FlexAlign::Inherit,
+            1 => FlexAlign::Stretch,
+            2 => FlexAlign::Start,
+            3 => FlexAlign::Center,
+            4 => FlexAlign::End,
+            5 => FlexAlign::SpaceBetween,
+            6 => FlexAlign::SpaceAround,
+            7 => FlexAlign::Baseline,
+            _ => panic!(),
+        }
+    }
+
+    pub fn with_align_items(&mut self, align: FlexAlign) -> Self {
+        call!(self.repr.clone(), "AlignItems" (align as u64) -> Self)
     }
 
     pub fn justify_content(&self) -> FlexAlign {
@@ -222,6 +264,7 @@ impl Layout {
         vec![
             FlexProperty::Direction(self.flex_direction()),
             FlexProperty::Wrap(self.flex_wrap()),
+            FlexProperty::AlignItems(self.align_items()),
             FlexProperty::AlignContent(self.align_content()),
             FlexProperty::JustifyContent(self.justify_content()),
             FlexProperty::Height(self.height()),
@@ -235,6 +278,7 @@ impl Layout {
             FlexProperty::PaddingTop(self.padding_top()),
             FlexProperty::PaddingBottom(self.padding_bottom()),
             FlexProperty::Grow(self.flex_grow()),
+            FlexProperty::Fixed(self.position_type() == PositionType::Absolute),
         ]
     }
 
@@ -277,7 +321,33 @@ impl IntoRED for Widget {
     }
 }
 
-#[allow(unused)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(u64)]
+pub enum PositionType {
+    Relative = 0,
+    Absolute = 1,
+}
+
+impl FromRED for PositionType {
+    type Repr = u64;
+
+    fn from_repr(repr: Self::Repr) -> Self {
+        unsafe { std::mem::transmute(repr) }
+    }
+}
+
+impl IntoRED for PositionType {
+    type Repr = u64;
+
+    fn type_name() -> &'static str {
+        "PositionType"
+    }
+
+    fn into_repr(self) -> Self::Repr {
+        self as u64
+    }
+}
+
 #[derive(Debug, Clone, Copy)]
 #[repr(u64)]
 pub enum DimensionUnit {

@@ -12,6 +12,7 @@ public abstract class Elem {
 
   public func GetChildren() -> array<ref<Elem>> = [];
   public func GetLayout() -> ref<Layout> = this.layout;
+  public func GetPreferredSize() -> Vector2 = new Vector2(0, 0);
 
   public func Layout(layout: ref<Layout>) -> ref<Elem> {
     this.layout = layout;
@@ -24,6 +25,7 @@ public abstract class Elem {
 public class Box extends Elem {
   let children: array<ref<Elem>>;
   let backgroundColor: Color;
+  let hasBackground: Bool;
 
   public static func New(children: array<ref<Elem>>) -> ref<Box> {
     let self = new Box();
@@ -38,6 +40,7 @@ public class Box extends Elem {
 
   public func BackgroundColor(color: Color) -> ref<Box> {
     this.backgroundColor = color;
+    this.hasBackground = true;
     return this;
   }
 
@@ -53,11 +56,13 @@ public class Box extends Elem {
     canv.SetTranslation(pos);
     canv.SetSize(size);
 
-    let rect = new inkRectangle();
-    rect.SetTintColor(this.backgroundColor);
-    rect.SetSize(size);
-
-    canv.AddChildWidget(rect);
+    if this.hasBackground {
+      let rect = new inkRectangle();
+      rect.SetTintColor(this.backgroundColor);
+      rect.SetSize(size);
+      canv.AddChildWidget(rect);
+    }
+    
     return canv;
   }
 }
@@ -94,5 +99,47 @@ public class Text extends Elem {
     text.SetFontSize(this.fontSize);
     text.SetTintColor(this.color);
     return text;
+  }
+}
+
+public class Image extends Elem {
+  let atlas: ResRef;
+  let texturePart: String;
+  let nineSliceScale: Bool;
+  let tint: Color;
+
+  public static func New(atlas: String) -> ref<Image> {
+    let self = new Image();
+    self.atlas = ResRef.FromString(atlas);
+    return self;
+  }
+
+  public func TexturePart(part: String) -> ref<Image> {
+    this.texturePart = part;
+    return this;
+  }
+
+  public func NineSliceScale(val: Bool) -> ref<Image> {
+    this.nineSliceScale = val;
+    return this;
+  }
+
+  public func Tint(color: Color) -> ref<Image> {
+    this.tint = color;
+    return this;
+  }
+
+  public func Render(pos: Vector2, size: Vector2) -> ref<inkWidget> {
+    let img = new inkImage();
+    img.SetTranslation(pos);
+    img.SetSize(size);
+
+    img.SetAtlasResource(this.atlas);
+    if NotEquals(this.texturePart, "") {
+      img.SetTexturePart(StringToName(this.texturePart));
+    }
+    img.SetNineSliceScale(this.nineSliceScale);
+    img.SetTintColor(this.tint);
+    return img;
   }
 }

@@ -1,7 +1,19 @@
+use std::path::PathBuf;
+
 use anyhow::{anyhow, Result};
 use flexlayout_rs::{FlexAlign, FlexDirection, FlexWrap};
 
-use crate::redscript::{Color, Elem, Layout};
+use crate::redscript::{Color, Elem, Layout, PositionType};
+
+pub fn load(name: &str) -> Result<Elem> {
+    let path = PathBuf::from("r6")
+        .join("ui")
+        .join("templates")
+        .join(name)
+        .with_extension("html");
+
+    parse(&std::fs::read_to_string(path)?)
+}
 
 pub fn parse(str: &str) -> Result<Elem> {
     let dom = tl::parse(str, tl::ParserOptions::default());
@@ -30,6 +42,36 @@ fn parse_elem(node: &tl::Node, parser: &tl::Parser) -> Result<Option<Elem>> {
 
                 Ok(Some(elem))
             }
+            b"img" => {
+                let attrs = tag.attributes();
+                let atlas = attrs
+                    .get_attribute("atlas")
+                    .flatten()
+                    .map(|bytes| bytes.as_utf8_str());
+
+                if let Some(atlas) = atlas {
+                    let part = attrs
+                        .get_attribute("part")
+                        .flatten()
+                        .map(|bytes| bytes.as_utf8_str());
+                    let color = attrs
+                        .get_attribute("tint")
+                        .flatten()
+                        .and_then(|bytes| Color::from_hex(&bytes.as_utf8_str()).ok());
+                    let nine_slice = attrs
+                        .get_attribute("nine-slice")
+                        .flatten()
+                        .and_then(|bytes| bytes.as_utf8_str().parse().ok())
+                        .unwrap_or(false);
+
+                    let elem = Elem::new_image(&atlas, part.as_deref(), color, nine_slice)
+                        .with_layout(parse_layout(attrs)?);
+
+                    Ok(Some(elem))
+                } else {
+                    Ok(None)
+                }
+            }
             _ => Err(anyhow!("Unexpected tag")),
         },
         tl::Node::Raw(bytes) => {
@@ -41,6 +83,14 @@ fn parse_elem(node: &tl::Node, parser: &tl::Parser) -> Result<Option<Elem>> {
 }
 
 fn parse_layout(attrs: &tl::Attributes) -> Result<Layout> {
+    fn parse_position_type(bytes: &[u8]) -> Result<PositionType> {
+        match bytes {
+            b"relative" => Ok(PositionType::Relative),
+            b"absolute" => Ok(PositionType::Absolute),
+            _ => return Err(anyhow!("Invalid FlexWrap")),
+        }
+    }
+
     fn parse_flex_wrap(bytes: &[u8]) -> Result<FlexWrap> {
         match bytes {
             b"no-wrap" => Ok(FlexWrap::NoWrap),
@@ -75,17 +125,23 @@ fn parse_layout(attrs: &tl::Attributes) -> Result<Layout> {
     }
 
     let mut layout = Layout::new();
+    if let Some(bytes) = attrs.get_attribute("position").flatten() {
+        layout.with_position_type(parse_position_type(bytes.raw())?);
+    }
     if let Some(bytes) = attrs.get_attribute("flex-wrap").flatten() {
         layout.with_flex_wrap(parse_flex_wrap(bytes.raw())?);
     }
     if let Some(bytes) = attrs.get_attribute("flex-direction").flatten() {
         layout.with_flex_direction(parse_flex_dir(bytes.raw())?);
     }
-    if let Some(bytes) = attrs.get_attribute("justify-content").flatten() {
-        layout.with_justify_content(parse_flex_align(bytes.raw())?);
+    if let Some(bytes) = attrs.get_attribute("align-items").flatten() {
+        layout.with_align_items(parse_flex_align(bytes.raw())?);
     }
     if let Some(bytes) = attrs.get_attribute("align-content").flatten() {
         layout.with_align_content(parse_flex_align(bytes.raw())?);
+    }
+    if let Some(bytes) = attrs.get_attribute("justify-content").flatten() {
+        layout.with_justify_content(parse_flex_align(bytes.raw())?);
     }
     if let Some(bytes) = attrs.get_attribute("width").flatten() {
         layout.with_width(&bytes.as_utf8_str());

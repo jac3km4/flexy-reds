@@ -24,6 +24,10 @@ pub fn parse_dimension(str: String) -> Ref<RED4ext::IScriptable> {
     call!("Flexy.Layout.Dim::New;FloatUnit" (val, unit) -> Ref<RED4ext::IScriptable>)
 }
 
-pub fn parse_html(input: String) -> Elem {
+pub fn parse_markup(input: String) -> Elem {
     markup::parse(&input).unwrap()
+}
+
+pub fn load_markup(name: String) -> Elem {
+    markup::load(&name).unwrap()
 }
