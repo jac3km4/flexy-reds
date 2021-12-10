@@ -330,7 +330,7 @@ dependencies = [
 [[package]]
 name = "flexlayout-rs"
 version = "0.1.0"
-source = "git+https://github.com/jac3km4/flexlayout-rs.git?rev=ae8e3ad#ae8e3ad4e19e74d3642f688a6de39db2a2d5349a"
+source = "git+https://github.com/jac3km4/flexlayout-rs.git?rev=14c4377#14c43771bc825dd5f3d5c8d121f16c5ec687d092"
 dependencies = [
  "bindgen",
  "cc",
@@ -343,6 +343,7 @@ dependencies = [
  "anyhow",
  "flexlayout-rs",
  "red4ext-rs",
+ "tl",
 ]
 
 [[package]]
@@ -373,9 +374,9 @@ dependencies = [
 
 [[package]]
 name = "hermit-abi"
-version = "0.1.20"
+version = "0.1.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c7a30908dbce072eca83216eab939d2290080e00ca71611b96a09e5cdce5f3fa"
+checksum = "62b467343b94ba476dcb2500d242dadbb39557df889310ac77c5d99100aaac33"
 dependencies = [
  "libc",
 ]
@@ -433,9 +434,9 @@ checksum = "830d08ce1d1d941e6b30645f1a0eb5643013d835ce3779a5fc208261dbe10f55"
 
 [[package]]
 name = "libc"
-version = "0.2.110"
+version = "0.2.109"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b58a4469763e4e3a906c4ed786e1c70512d16aa88f84dded826da42640fc6a1c"
+checksum = "f98a04dce437184842841303488f70d0188c5f51437d2a834dc097eafa909a01"
 
 [[package]]
 name = "libloading"
@@ -591,7 +592,7 @@ dependencies = [
 [[package]]
 name = "red4ext-rs"
 version = "0.1.0"
-source = "git+https://github.com/jac3km4/red4ext-rs.git?rev=fe11d3a#fe11d3a682cbace761cfdffd33abf4aa8366c08b"
+source = "git+https://github.com/jac3km4/red4ext-rs.git?rev=40c41d8#40c41d8745fcd5ecea8b97200aae8921c7550abf"
 dependencies = [
  "array-init",
  "autocxx",
@@ -749,6 +750,12 @@ checksum = "d326610f408c7a4eb6f51c37c330e496b08506c9457c9d34287ecc38809fb060"
 dependencies = [
  "unicode-width",
 ]
+
+[[package]]
+name = "tl"
+version = "0.4.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fe3c1e80b90365b845a0066e88fe71d4090cac530274e98cdb35a2bcb8179429"
 
 [[package]]
 name = "unicode-segmentation"

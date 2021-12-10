@@ -1,21 +1,52 @@
 use flexlayout_rs::{Dimension, FlexAlign, FlexDirection, FlexProperty, FlexWrap};
-use red4ext_rs::interop::{FromRED, IntoRED};
+use red4ext_rs::interop::{Color, IsoRED};
 use red4ext_rs::prelude::*;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
+#[repr(C)]
 pub struct Elem {
     pub(crate) repr: Ref<RED4ext::IScriptable>,
 }
 
-impl FromRED for Elem {
-    type Repr = Ref<RED4ext::IScriptable>;
-
-    fn from_repr(repr: Self::Repr) -> Self {
-        Elem { repr }
+impl IsoRED for Elem {
+    #[inline]
+    fn type_name() -> &'static str {
+        "ref<Elem>"
     }
 }
 
 impl Elem {
+    pub fn new_box(children: impl IntoIterator<Item = Elem>, color: Option<Color>) -> Self {
+        let elem = call!("Flexy.UI.Box::New;" () -> Elem);
+        for child in children {
+            call!(elem.repr.clone(), "Child" (child) -> Elem);
+        }
+        if let Some(color) = color {
+            call!(elem.repr.clone(), "BackgroundColor" (color) -> Elem);
+        }
+        elem
+    }
+
+    pub fn new_text(str: &str, font_size: Option<i32>) -> Self {
+        let elem = call!("Flexy.UI.Text::New;String" (str) -> Elem);
+        if let Some(font_size) = font_size {
+            call!(elem.repr.clone(), "FontSize" (font_size) -> Elem);
+        }
+        elem
+    }
+
+    pub fn new_image(atlas: &str, part: Option<&str>, color: Option<Color>, nine_slice: bool) -> Self {
+        let elem = call!("Flexy.UI.Image::New;String" (atlas) -> Elem);
+        if let Some(part) = part {
+            call!(elem.repr.clone(), "TexturePart" (part) -> Elem);
+        }
+        if let Some(color) = color {
+            call!(elem.repr.clone(), "Tint" (color) -> Elem);
+        }
+        call!(elem.repr.clone(), "NineSliceScale" (nine_slice) -> Elem);
+        elem
+    }
+
     pub fn layout(&self) -> Layout {
         call!(self.repr.clone(), "GetLayout" () -> Layout)
     }
@@ -23,22 +54,42 @@ impl Elem {
     pub fn children(&self) -> Vec<Elem> {
         call!(self.repr.clone(), "GetChildren" () -> Vec<Elem>)
     }
+
+    pub fn with_layout(&mut self, layout: Layout) -> Self {
+        call!(self.repr.clone(), "Layout" (layout) -> Elem)
+    }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
+#[repr(C)]
 pub struct Layout {
     pub(crate) repr: Ref<RED4ext::IScriptable>,
 }
 
-impl FromRED for Layout {
-    type Repr = Ref<RED4ext::IScriptable>;
-
-    fn from_repr(repr: Self::Repr) -> Self {
-        Layout { repr }
+impl IsoRED for Layout {
+    #[inline]
+    fn type_name() -> &'static str {
+        "ref<Layout>"
     }
 }
 
 impl Layout {
+    pub fn new() -> Self {
+        call!("Flexy.Layout.Layout::New;" () -> Layout)
+    }
+
+    pub fn position_type(&self) -> PositionType {
+        match call!(self.repr.clone(), "GetPositionType" () -> u64) {
+            0 => PositionType::Relative,
+            1 => PositionType::Absolute,
+            _ => panic!(),
+        }
+    }
+
+    pub fn with_position_type(&mut self, typ: PositionType) -> Self {
+        call!(self.repr.clone(), "PositionType" (typ as u64) -> Self)
+    }
+
     pub fn flex_direction(&self) -> FlexDirection {
         match call!(self.repr.clone(), "GetFlexDirection" () -> u64) {
             0 => FlexDirection::Row,
@@ -49,6 +100,10 @@ impl Layout {
         }
     }
 
+    pub fn with_flex_direction(&mut self, dir: FlexDirection) -> Self {
+        call!(self.repr.clone(), "FlexDirection" (dir as u64) -> Self)
+    }
+
     pub fn flex_wrap(&self) -> FlexWrap {
         match call!(self.repr.clone(), "GetFlexWrap" () -> u64) {
             0 => FlexWrap::NoWrap,
@@ -56,6 +111,10 @@ impl Layout {
             2 => FlexWrap::WrapReverse,
             _ => panic!(),
         }
+    }
+
+    pub fn with_flex_wrap(&mut self, wrap: FlexWrap) -> Self {
+        call!(self.repr.clone(), "FlexWrap" (wrap as u64) -> Self)
     }
 
     pub fn align_content(&self) -> FlexAlign {
@@ -72,6 +131,28 @@ impl Layout {
         }
     }
 
+    pub fn with_align_content(&mut self, align: FlexAlign) -> Self {
+        call!(self.repr.clone(), "AlignContent" (align as u64) -> Self)
+    }
+
+    pub fn align_items(&self) -> FlexAlign {
+        match call!(self.repr.clone(), "GetAlignItems" () -> u64) {
+            0 => FlexAlign::Inherit,
+            1 => FlexAlign::Stretch,
+            2 => FlexAlign::Start,
+            3 => FlexAlign::Center,
+            4 => FlexAlign::End,
+            5 => FlexAlign::SpaceBetween,
+            6 => FlexAlign::SpaceAround,
+            7 => FlexAlign::Baseline,
+            _ => panic!(),
+        }
+    }
+
+    pub fn with_align_items(&mut self, align: FlexAlign) -> Self {
+        call!(self.repr.clone(), "AlignItems" (align as u64) -> Self)
+    }
+
     pub fn justify_content(&self) -> FlexAlign {
         match call!(self.repr.clone(), "GetJustifyContent" () -> u64) {
             0 => FlexAlign::Inherit,
@@ -86,12 +167,24 @@ impl Layout {
         }
     }
 
+    pub fn with_justify_content(&mut self, align: FlexAlign) -> Self {
+        call!(self.repr.clone(), "JustifyContent" (align as u64) -> Self)
+    }
+
     pub fn height(&self) -> Dimension {
         Self::create_dim(call!(self.repr.clone(), "GetHeight" () -> Ref<RED4ext::IScriptable>))
     }
 
+    pub fn with_height(&mut self, str: &str) -> Self {
+        call!(self.repr.clone(), "Height" (str) -> Self)
+    }
+
     pub fn width(&self) -> Dimension {
         Self::create_dim(call!(self.repr.clone(), "GetWidth" () -> Ref<RED4ext::IScriptable>))
+    }
+
+    pub fn with_width(&mut self, str: &str) -> Self {
+        call!(self.repr.clone(), "Width" (str) -> Self)
     }
 
     pub fn margin_left(&self) -> f32 {
@@ -110,6 +203,10 @@ impl Layout {
         call!(self.repr.clone(), "GetMarginBottom" () -> f32)
     }
 
+    pub fn with_margin(&mut self, val: f32) -> Self {
+        call!(self.repr.clone(), "Margin" (val) -> Self)
+    }
+
     pub fn padding_left(&self) -> f32 {
         call!(self.repr.clone(), "GetPaddingLeft" () -> f32)
     }
@@ -126,14 +223,23 @@ impl Layout {
         call!(self.repr.clone(), "GetPaddingBottom" () -> f32)
     }
 
+    pub fn with_padding(&mut self, val: f32) -> Self {
+        call!(self.repr.clone(), "Padding" (val) -> Self)
+    }
+
     pub fn flex_grow(&self) -> f32 {
         call!(self.repr.clone(), "GetFlexGrow" () -> f32)
+    }
+
+    pub fn with_flex_grow(&mut self, val: f32) -> Self {
+        call!(self.repr.clone(), "FlexGrow" (val) -> Self)
     }
 
     pub fn properties(&self) -> Vec<FlexProperty> {
         vec![
             FlexProperty::Direction(self.flex_direction()),
             FlexProperty::Wrap(self.flex_wrap()),
+            FlexProperty::AlignItems(self.align_items()),
             FlexProperty::AlignContent(self.align_content()),
             FlexProperty::JustifyContent(self.justify_content()),
             FlexProperty::Height(self.height()),
@@ -147,6 +253,7 @@ impl Layout {
             FlexProperty::PaddingTop(self.padding_top()),
             FlexProperty::PaddingBottom(self.padding_bottom()),
             FlexProperty::Grow(self.flex_grow()),
+            FlexProperty::Fixed(self.position_type() == PositionType::Absolute),
         ]
     }
 
@@ -164,32 +271,39 @@ impl Layout {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
+#[repr(C)]
 pub struct Widget {
     pub(crate) repr: Ref<RED4ext::IScriptable>,
 }
 
-impl FromRED for Widget {
-    type Repr = Ref<RED4ext::IScriptable>;
-
-    fn from_repr(repr: Self::Repr) -> Self {
-        Widget { repr }
-    }
-}
-
-impl IntoRED for Widget {
-    type Repr = Ref<RED4ext::IScriptable>;
-
+impl IsoRED for Widget {
+    #[inline]
     fn type_name() -> &'static str {
         "ref<inkWidget>"
     }
+}
 
-    fn into_repr(self) -> Self::Repr {
-        self.repr
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(u64)]
+pub enum PositionType {
+    Relative = 0,
+    Absolute = 1,
+}
+
+impl Default for PositionType {
+    fn default() -> Self {
+        PositionType::Relative
     }
 }
 
-#[allow(unused)]
+impl IsoRED for PositionType {
+    #[inline]
+    fn type_name() -> &'static str {
+        "PositionType"
+    }
+}
+
 #[derive(Debug, Clone, Copy)]
 #[repr(u64)]
 pub enum DimensionUnit {
@@ -198,55 +312,15 @@ pub enum DimensionUnit {
     Percent = 2,
 }
 
-impl FromRED for DimensionUnit {
-    type Repr = u64;
-
-    fn from_repr(repr: Self::Repr) -> Self {
-        unsafe { std::mem::transmute(repr) }
+impl Default for DimensionUnit {
+    fn default() -> Self {
+        DimensionUnit::Auto
     }
 }
 
-impl IntoRED for DimensionUnit {
-    type Repr = u64;
-
+impl IsoRED for DimensionUnit {
+    #[inline]
     fn type_name() -> &'static str {
         "Unit"
-    }
-
-    fn into_repr(self) -> Self::Repr {
-        self as u64
-    }
-}
-
-#[derive(Debug, Default, Clone)]
-#[repr(C)]
-pub struct Vector2 {
-    pub x: f32,
-    pub y: f32,
-}
-
-impl Vector2 {
-    pub fn new(x: f32, y: f32) -> Self {
-        Self { x, y }
-    }
-}
-
-impl IntoRED for Vector2 {
-    type Repr = Self;
-
-    fn type_name() -> &'static str {
-        "Vector2"
-    }
-
-    fn into_repr(self) -> Self::Repr {
-        self
-    }
-}
-
-impl FromRED for Vector2 {
-    type Repr = Self;
-
-    fn from_repr(repr: Self::Repr) -> Self {
-        repr
     }
 }

@@ -1,8 +1,9 @@
 use flexlayout_rs::Dimension;
+use red4ext_rs::interop::Vector2;
 use red4ext_rs::prelude::*;
 
-use crate::layout;
-use crate::redscript::{DimensionUnit, Elem, Vector2, Widget};
+use crate::redscript::{DimensionUnit, Elem, Widget};
+use crate::{layout, markup};
 
 pub fn render_elem(root: Elem, size: Vector2) -> Widget {
     let node = layout::build(root);
@@ -22,4 +23,12 @@ pub fn parse_dimension(str: String) -> Ref<RED4ext::IScriptable> {
     };
 
     call!("Flexy.Layout.Dim::New;FloatUnit" (val, unit) -> Ref<RED4ext::IScriptable>)
+}
+
+pub fn parse_markup(input: String) -> Elem {
+    markup::parse(&input).unwrap()
+}
+
+pub fn load_markup(name: String) -> Elem {
+    markup::load(&name).unwrap()
 }

@@ -1,8 +1,10 @@
 module Flexy.Layout
 
 public class Layout {
+  let positionType: PositionType;
   let flexDirection: FlexDirection;
   let flexWrap: FlexWrap;
+  let alignItems: FlexAlign;
   let alignContent: FlexAlign;
   let justifyContent: FlexAlign;
   let height: ref<Dim>;
@@ -23,8 +25,10 @@ public class Layout {
 
   public static func New() -> ref<Layout> = new Layout();
 
+  public func GetPositionType() -> PositionType = this.positionType;
   public func GetFlexDirection() -> FlexDirection = this.flexDirection;
   public func GetFlexWrap() -> FlexWrap = this.flexWrap;
+  public func GetAlignItems() -> FlexAlign = this.alignItems;
   public func GetAlignContent() -> FlexAlign = this.alignContent;
   public func GetJustifyContent() -> FlexAlign = this.justifyContent;
   public func GetHeight() -> ref<Dim> = this.height;
@@ -39,6 +43,11 @@ public class Layout {
   public func GetPaddingBottom() -> Float = this.paddingBottom;
   public func GetFlexGrow() -> Float = this.flexGrow;
 
+  public func PositionType(typ: PositionType) -> ref<Layout> {
+    this.positionType = typ;
+    return this;
+  }
+
   public func FlexDirection(dir: FlexDirection) -> ref<Layout> {
     this.flexDirection = dir;
     return this;
@@ -48,14 +57,19 @@ public class Layout {
     this.flexWrap = wrap;
     return this;
   }
-
-  public func JustifyContent(justify: FlexAlign) -> ref<Layout> {
-    this.justifyContent = justify;
+  
+  public func AlignItems(align: FlexAlign) -> ref<Layout> {
+    this.alignItems = align;
     return this;
   }
 
   public func AlignContent(align: FlexAlign) -> ref<Layout> {
     this.alignContent = align;
+    return this;
+  }
+
+  public func JustifyContent(justify: FlexAlign) -> ref<Layout> {
+    this.justifyContent = justify;
     return this;
   }
 
@@ -134,6 +148,11 @@ enum FlexAlign {
   SpaceBetween = 5,
   SpaceAround = 6,
   Baseline = 7
+}
+
+enum PositionType {
+  Relative = 0,
+  Absolute = 1
 }
 
 native func ParseDim(str: String) -> ref<Dim>;
