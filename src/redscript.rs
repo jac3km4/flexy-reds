@@ -1,30 +1,17 @@
-use anyhow::{anyhow, Result};
 use flexlayout_rs::{Dimension, FlexAlign, FlexDirection, FlexProperty, FlexWrap};
-use red4ext_rs::interop::{FromRED, IntoRED};
+use red4ext_rs::interop::{Color, IsoRED};
 use red4ext_rs::prelude::*;
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
+#[repr(C)]
 pub struct Elem {
     pub(crate) repr: Ref<RED4ext::IScriptable>,
 }
 
-impl IntoRED for Elem {
-    type Repr = Ref<RED4ext::IScriptable>;
-
+impl IsoRED for Elem {
+    #[inline]
     fn type_name() -> &'static str {
         "ref<Elem>"
-    }
-
-    fn into_repr(self) -> Self::Repr {
-        self.repr
-    }
-}
-
-impl FromRED for Elem {
-    type Repr = Ref<RED4ext::IScriptable>;
-
-    fn from_repr(repr: Self::Repr) -> Self {
-        Elem { repr }
     }
 }
 
@@ -73,28 +60,16 @@ impl Elem {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
+#[repr(C)]
 pub struct Layout {
     pub(crate) repr: Ref<RED4ext::IScriptable>,
 }
 
-impl IntoRED for Layout {
-    type Repr = Ref<RED4ext::IScriptable>;
-
+impl IsoRED for Layout {
+    #[inline]
     fn type_name() -> &'static str {
         "ref<Layout>"
-    }
-
-    fn into_repr(self) -> Self::Repr {
-        self.repr
-    }
-}
-
-impl FromRED for Layout {
-    type Repr = Ref<RED4ext::IScriptable>;
-
-    fn from_repr(repr: Self::Repr) -> Self {
-        Layout { repr }
     }
 }
 
@@ -296,28 +271,16 @@ impl Layout {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
+#[repr(C)]
 pub struct Widget {
     pub(crate) repr: Ref<RED4ext::IScriptable>,
 }
 
-impl FromRED for Widget {
-    type Repr = Ref<RED4ext::IScriptable>;
-
-    fn from_repr(repr: Self::Repr) -> Self {
-        Widget { repr }
-    }
-}
-
-impl IntoRED for Widget {
-    type Repr = Ref<RED4ext::IScriptable>;
-
+impl IsoRED for Widget {
+    #[inline]
     fn type_name() -> &'static str {
         "ref<inkWidget>"
-    }
-
-    fn into_repr(self) -> Self::Repr {
-        self.repr
     }
 }
 
@@ -328,23 +291,16 @@ pub enum PositionType {
     Absolute = 1,
 }
 
-impl FromRED for PositionType {
-    type Repr = u64;
-
-    fn from_repr(repr: Self::Repr) -> Self {
-        unsafe { std::mem::transmute(repr) }
+impl Default for PositionType {
+    fn default() -> Self {
+        PositionType::Relative
     }
 }
 
-impl IntoRED for PositionType {
-    type Repr = u64;
-
+impl IsoRED for PositionType {
+    #[inline]
     fn type_name() -> &'static str {
         "PositionType"
-    }
-
-    fn into_repr(self) -> Self::Repr {
-        self as u64
     }
 }
 
@@ -356,108 +312,15 @@ pub enum DimensionUnit {
     Percent = 2,
 }
 
-impl FromRED for DimensionUnit {
-    type Repr = u64;
-
-    fn from_repr(repr: Self::Repr) -> Self {
-        unsafe { std::mem::transmute(repr) }
+impl Default for DimensionUnit {
+    fn default() -> Self {
+        DimensionUnit::Auto
     }
 }
 
-impl IntoRED for DimensionUnit {
-    type Repr = u64;
-
+impl IsoRED for DimensionUnit {
+    #[inline]
     fn type_name() -> &'static str {
         "Unit"
-    }
-
-    fn into_repr(self) -> Self::Repr {
-        self as u64
-    }
-}
-
-#[derive(Debug, Default, Clone)]
-#[repr(C)]
-pub struct Vector2 {
-    pub x: f32,
-    pub y: f32,
-}
-
-impl Vector2 {
-    pub fn new(x: f32, y: f32) -> Self {
-        Self { x, y }
-    }
-}
-
-impl IntoRED for Vector2 {
-    type Repr = Self;
-
-    fn type_name() -> &'static str {
-        "Vector2"
-    }
-
-    fn into_repr(self) -> Self::Repr {
-        self
-    }
-}
-
-impl FromRED for Vector2 {
-    type Repr = Self;
-
-    fn from_repr(repr: Self::Repr) -> Self {
-        repr
-    }
-}
-
-#[derive(Debug, Default, Clone)]
-#[repr(C)]
-pub struct Color {
-    pub red: u8,
-    pub green: u8,
-    pub blue: u8,
-    pub alpha: u8,
-}
-
-impl Color {
-    pub fn new(red: u8, green: u8, blue: u8, alpha: u8) -> Self {
-        Self {
-            red,
-            green,
-            blue,
-            alpha,
-        }
-    }
-
-    pub fn from_hex(str: &str) -> Result<Self> {
-        let str = str
-            .strip_prefix('#')
-            .ok_or_else(|| anyhow!("Invalid color literal"))?;
-        if str.len() != 6 {
-            return Err(anyhow!("Only full hex color literals allowed"));
-        }
-        let red = u8::from_str_radix(&str[0..2], 16)?;
-        let green = u8::from_str_radix(&str[2..4], 16)?;
-        let blue = u8::from_str_radix(&str[4..6], 16)?;
-        Ok(Self::new(red, green, blue, 255))
-    }
-}
-
-impl IntoRED for Color {
-    type Repr = Self;
-
-    fn type_name() -> &'static str {
-        "Color"
-    }
-
-    fn into_repr(self) -> Self::Repr {
-        self
-    }
-}
-
-impl FromRED for Color {
-    type Repr = Self;
-
-    fn from_repr(repr: Self::Repr) -> Self {
-        repr
     }
 }

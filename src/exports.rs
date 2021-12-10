@@ -1,7 +1,8 @@
 use flexlayout_rs::Dimension;
+use red4ext_rs::interop::Vector2;
 use red4ext_rs::prelude::*;
 
-use crate::redscript::{DimensionUnit, Elem, Vector2, Widget};
+use crate::redscript::{DimensionUnit, Elem, Widget};
 use crate::{layout, markup};
 
 pub fn render_elem(root: Elem, size: Vector2) -> Widget {

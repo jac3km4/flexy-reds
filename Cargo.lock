@@ -592,7 +592,7 @@ dependencies = [
 [[package]]
 name = "red4ext-rs"
 version = "0.1.0"
-source = "git+https://github.com/jac3km4/red4ext-rs.git?rev=fe11d3a#fe11d3a682cbace761cfdffd33abf4aa8366c08b"
+source = "git+https://github.com/jac3km4/red4ext-rs.git?rev=40c41d8#40c41d8745fcd5ecea8b97200aae8921c7550abf"
 dependencies = [
  "array-init",
  "autocxx",

@@ -2,8 +2,9 @@ use std::path::PathBuf;
 
 use anyhow::{anyhow, Result};
 use flexlayout_rs::{FlexAlign, FlexDirection, FlexWrap};
+use red4ext_rs::interop::Color;
 
-use crate::redscript::{Color, Elem, Layout, PositionType};
+use crate::redscript::{Elem, Layout, PositionType};
 
 pub fn load(name: &str) -> Result<Elem> {
     let path = PathBuf::from("r6")
@@ -36,7 +37,7 @@ fn parse_elem(node: &tl::Node, parser: &tl::Parser) -> Result<Option<Elem>> {
                 let color = attrs
                     .get_attribute("background-color")
                     .flatten()
-                    .and_then(|bytes| Color::from_hex(&bytes.as_utf8_str()).ok());
+                    .and_then(|bytes| parse_color(&bytes.as_utf8_str()).ok());
 
                 let elem = Elem::new_box(children, color).with_layout(parse_layout(attrs)?);
 
@@ -57,7 +58,7 @@ fn parse_elem(node: &tl::Node, parser: &tl::Parser) -> Result<Option<Elem>> {
                     let color = attrs
                         .get_attribute("tint")
                         .flatten()
-                        .and_then(|bytes| Color::from_hex(&bytes.as_utf8_str()).ok());
+                        .and_then(|bytes| parse_color(&bytes.as_utf8_str()).ok());
                     let nine_slice = attrs
                         .get_attribute("nine-slice")
                         .flatten()
@@ -80,6 +81,19 @@ fn parse_elem(node: &tl::Node, parser: &tl::Parser) -> Result<Option<Elem>> {
         }
         tl::Node::Comment(_) => Ok(None),
     }
+}
+
+fn parse_color(str: &str) -> Result<Color> {
+    let str = str
+        .strip_prefix('#')
+        .ok_or_else(|| anyhow!("Invalid color literal"))?;
+    if str.len() != 6 {
+        return Err(anyhow!("Only full hex color literals allowed"));
+    }
+    let red = u8::from_str_radix(&str[0..2], 16)?;
+    let green = u8::from_str_radix(&str[2..4], 16)?;
+    let blue = u8::from_str_radix(&str[4..6], 16)?;
+    Ok(Color::new(red, green, blue, 255))
 }
 
 fn parse_layout(attrs: &tl::Attributes) -> Result<Layout> {

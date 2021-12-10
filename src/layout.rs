@@ -1,5 +1,6 @@
 use anyhow::{anyhow, Result};
 use flexlayout_rs::{Dimension, Node, NodeWithLayout};
+use red4ext_rs::interop::Vector2;
 use red4ext_rs::prelude::*;
 
 use crate::redscript;
@@ -11,8 +12,8 @@ pub fn build(elem: redscript::Elem) -> Node<redscript::Elem> {
 }
 
 pub fn render(node: NodeWithLayout<redscript::Elem>) -> redscript::Widget {
-    let pos = redscript::Vector2::new(node.left(), node.top());
-    let size = redscript::Vector2::new(node.width(), node.height());
+    let pos = Vector2::new(node.left(), node.top());
+    let size = Vector2::new(node.width(), node.height());
     let elem = node.inner().context();
     let widget = call!(elem.repr.clone(), "Render" (pos, size) -> redscript::Widget);
 
