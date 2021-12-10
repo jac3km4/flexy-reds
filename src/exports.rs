@@ -21,5 +21,5 @@ pub fn parse_dimension(str: String) -> Ref<RED4ext::IScriptable> {
         Dimension::Percent(val) => (val, DimensionUnit::Percent),
     };
 
-    call!("Flexy.Layout.NewDim;FloatUnit" (val, unit) -> Ref<RED4ext::IScriptable>)
+    call!("Flexy.Layout.Dim::New;FloatUnit" (val, unit) -> Ref<RED4ext::IScriptable>)
 }

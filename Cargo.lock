@@ -259,9 +259,9 @@ dependencies = [
 
 [[package]]
 name = "cxx"
-version = "1.0.58"
+version = "1.0.59"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c99a363a6495600daed3a8bddf743f757fe2ad9934cc3f99839f410b3d2cd0bf"
+checksum = "3697cf0e9f68956261fffae028fcfbeb865fd3715b0b0e984f7324c3566256e2"
 dependencies = [
  "cc",
  "cxxbridge-flags",
@@ -271,9 +271,9 @@ dependencies = [
 
 [[package]]
 name = "cxx-gen"
-version = "0.7.58"
+version = "0.7.59"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2df725ff70c1afbeebe826bbbad2cf379f72ffb1160a16cac7a64b771e495df3"
+checksum = "11a451642e2a1a5d26baa6d41dd48579f0276493a4531b5eeb0722fee2ee0614"
 dependencies = [
  "codespan-reporting",
  "proc-macro2",
@@ -283,15 +283,15 @@ dependencies = [
 
 [[package]]
 name = "cxxbridge-flags"
-version = "1.0.58"
+version = "1.0.59"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "36350a174d39466913110c68870303b6b443f27f6c1f8eead11c0e68a4b7aa56"
+checksum = "d11a551f56b72c0c86e18470695d975c4fa6bd7b5c79063794bf8aedc3ba641b"
 
 [[package]]
 name = "cxxbridge-macro"
-version = "1.0.58"
+version = "1.0.59"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f302dc691ab9638ab7e23a855e64c45612d36d15675c26e61bdf0957033d1a5b"
+checksum = "d483e919e74ca9376022673dec36450114eb30d0e93de59c59d252a13d4ee3b2"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -373,9 +373,9 @@ dependencies = [
 
 [[package]]
 name = "hermit-abi"
-version = "0.1.19"
+version = "0.1.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "62b467343b94ba476dcb2500d242dadbb39557df889310ac77c5d99100aaac33"
+checksum = "c7a30908dbce072eca83216eab939d2290080e00ca71611b96a09e5cdce5f3fa"
 dependencies = [
  "libc",
 ]
@@ -433,9 +433,9 @@ checksum = "830d08ce1d1d941e6b30645f1a0eb5643013d835ce3779a5fc208261dbe10f55"
 
 [[package]]
 name = "libc"
-version = "0.2.109"
+version = "0.2.110"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f98a04dce437184842841303488f70d0188c5f51437d2a834dc097eafa909a01"
+checksum = "b58a4469763e4e3a906c4ed786e1c70512d16aa88f84dded826da42640fc6a1c"
 
 [[package]]
 name = "libloading"
@@ -591,7 +591,7 @@ dependencies = [
 [[package]]
 name = "red4ext-rs"
 version = "0.1.0"
-source = "git+https://github.com/jac3km4/red4ext-rs.git?rev=64d819c#64d819c47beda77abbde87821414e8f0bd20f151"
+source = "git+https://github.com/jac3km4/red4ext-rs.git?rev=fe11d3a#fe11d3a682cbace761cfdffd33abf4aa8366c08b"
 dependencies = [
  "array-init",
  "autocxx",
@@ -657,15 +657,15 @@ checksum = "d29ab0c6d3fc0ee92fe66e2d99f700eab17a8d57d1c1d3b748380fb20baa78cd"
 
 [[package]]
 name = "serde"
-version = "1.0.130"
+version = "1.0.131"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f12d06de37cf59146fbdecab66aa99f9fe4f78722e3607577a5375d66bd0c913"
+checksum = "b4ad69dfbd3e45369132cc64e6748c2d65cdfb001a2b1c232d128b4ad60561c1"
 
 [[package]]
 name = "serde_derive"
-version = "1.0.130"
+version = "1.0.131"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d7bc1a1ab1961464eae040d96713baa5a724a8152c1222492465b54322ec508b"
+checksum = "b710a83c4e0dff6a3d511946b95274ad9ca9e5d3ae497b63fda866ac955358d2"
 dependencies = [
  "proc-macro2",
  "quote",
