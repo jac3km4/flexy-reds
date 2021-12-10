@@ -32,8 +32,17 @@ public class Box extends Elem {
     return self;
   }
 
+  public static func New() -> ref<Box> {
+    return Box.New([]);
+  }
+
   public func BackgroundColor(color: Color) -> ref<Box> {
     this.backgroundColor = color;
+    return this;
+  }
+
+  public func Child(child: ref<Elem>) -> ref<Box> {
+    ArrayPush(this.children, child);
     return this;
   }
 

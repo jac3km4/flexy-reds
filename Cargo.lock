@@ -330,7 +330,7 @@ dependencies = [
 [[package]]
 name = "flexlayout-rs"
 version = "0.1.0"
-source = "git+https://github.com/jac3km4/flexlayout-rs.git?rev=ae8e3ad#ae8e3ad4e19e74d3642f688a6de39db2a2d5349a"
+source = "git+https://github.com/jac3km4/flexlayout-rs.git?rev=d7813c4#d7813c45c1f6710e1e4e47155496eca5de816b98"
 dependencies = [
  "bindgen",
  "cc",
@@ -343,6 +343,8 @@ dependencies = [
  "anyhow",
  "flexlayout-rs",
  "red4ext-rs",
+ "strum",
+ "tl",
 ]
 
 [[package]]
@@ -696,6 +698,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8ea5119cdb4c55b55d432abb513a0429384878c15dde60cc77b1c99de1a95a6a"
 
 [[package]]
+name = "strum"
+version = "0.23.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cae14b91c7d11c9a851d3fbc80a963198998c2a64eec840477fa92d8ce9b70bb"
+
+[[package]]
 name = "strum_macros"
 version = "0.20.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -749,6 +757,12 @@ checksum = "d326610f408c7a4eb6f51c37c330e496b08506c9457c9d34287ecc38809fb060"
 dependencies = [
  "unicode-width",
 ]
+
+[[package]]
+name = "tl"
+version = "0.4.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fe3c1e80b90365b845a0066e88fe71d4090cac530274e98cdb35a2bcb8179429"
 
 [[package]]
 name = "unicode-segmentation"
