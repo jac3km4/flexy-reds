@@ -76,8 +76,13 @@ public class Text extends Elem {
     return self;
   }
 
-   public func Color(color: Color) -> ref<Text> {
+  public func Color(color: Color) -> ref<Text> {
     this.color = color;
+    return this;
+  }
+
+  public func FontSize(size: Int32) -> ref<Text> {
+    this.fontSize = size;
     return this;
   }
 

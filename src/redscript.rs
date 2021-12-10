@@ -29,12 +29,35 @@ impl FromRED for Elem {
 }
 
 impl Elem {
+    pub fn new_box(children: impl IntoIterator<Item = Elem>, color: Option<Color>) -> Self {
+        let elem = call!("Flexy.UI.Box::New;" () -> Elem);
+        for child in children {
+            call!(elem.repr.clone(), "Child" (child) -> Elem);
+        }
+        if let Some(color) = color {
+            call!(elem.repr.clone(), "BackgroundColor" (color) -> Elem);
+        }
+        elem
+    }
+
+    pub fn new_text(str: &str, font_size: Option<i32>) -> Self {
+        let elem = call!("Flexy.UI.Text::New;String" (str) -> Elem);
+        if let Some(font_size) = font_size {
+            call!(elem.repr.clone(), "FontSize" (font_size) -> Elem);
+        }
+        elem
+    }
+
     pub fn layout(&self) -> Layout {
         call!(self.repr.clone(), "GetLayout" () -> Layout)
     }
 
     pub fn children(&self) -> Vec<Elem> {
         call!(self.repr.clone(), "GetChildren" () -> Vec<Elem>)
+    }
+
+    pub fn with_layout(&mut self, layout: Layout) -> Self {
+        call!(self.repr.clone(), "Layout" (layout) -> Elem)
     }
 }
 
@@ -64,6 +87,10 @@ impl FromRED for Layout {
 }
 
 impl Layout {
+    pub fn new() -> Self {
+        call!("Flexy.Layout.Layout::New;" () -> Layout)
+    }
+
     pub fn flex_direction(&self) -> FlexDirection {
         match call!(self.repr.clone(), "GetFlexDirection" () -> u64) {
             0 => FlexDirection::Row,
