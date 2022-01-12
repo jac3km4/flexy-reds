@@ -30,7 +30,7 @@ pub fn parse_dimension(str: &str) -> Result<Dimension> {
         "auto" => Ok(Dimension::Auto),
         other => {
             let idx = other
-                .replace(" ", "")
+                .replace(' ', "")
                 .find(|c: char| !c.is_digit(10) && c != '.')
                 .ok_or_else(|| anyhow!("Missing unit"))?;
             match other.split_at(idx) {

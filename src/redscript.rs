@@ -27,10 +27,13 @@ impl Elem {
         elem
     }
 
-    pub fn new_text(str: &str, font_size: Option<i32>) -> Self {
+    pub fn new_text(str: &str, font_size: Option<i32>, color: Option<Color>) -> Self {
         let elem = call!("Flexy.UI.Text::New;String" (str) -> Elem);
         if let Some(font_size) = font_size {
             call!(elem.repr.clone(), "FontSize" (font_size) -> Elem);
+        }
+        if let Some(color) = color {
+            call!(elem.repr.clone(), "Color" (color) -> Elem);
         }
         elem
     }
