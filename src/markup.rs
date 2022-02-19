@@ -33,7 +33,8 @@ fn parse_elem(node: &tl::Node, parser: &tl::Parser) -> Result<Option<Elem>> {
                 b"box" => {
                     let children = tag
                         .children()
-                        .filter_map(|handle| handle.get(parser))
+                        .all(parser)
+                        .into_iter()
                         .filter_map(|child| parse_elem(child, parser).transpose())
                         .collect::<Result<Vec<_>>>()?;
                     let color: Option<Color> = attrs.read_attr("background-color").ok();
